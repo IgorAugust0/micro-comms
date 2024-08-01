@@ -1,8 +1,11 @@
 import express from "express";
+import createPlaceholderData from "./lib/placeholder-data.js";
 
 const app = express();
 const env = process.env.NODE_ENV || "development";
 const port = process.env.PORT || 8080;
+
+createPlaceholderData();
 
 app.get("/api/status", (req, res) => {
   return res

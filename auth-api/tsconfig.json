@@ -13,11 +13,22 @@
     "isolatedModules": true,
     "incremental": true,
     "target": "ES2022",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "outDir": "./dist",
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/lib/placeholder-data.js",
+    "src/modules/model/user.js",
+    "src/config/db/db-config.ts",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }
