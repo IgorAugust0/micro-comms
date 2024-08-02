@@ -1,22 +1,16 @@
-import userService from "../service/user-service.ts";
 import { Request, Response } from "express";
+import userService from "../service/user-service.ts";
 
 class UserController {
+  // Method to get an access token
   async getAccessToken(req: Request, res: Response) {
-    try {
-      const accessToken = await userService.getAccessToken(req);
-      return res.status(accessToken.status).json(accessToken);
-    } catch (err: unknown) {
-      return res.status(400).json(err);
-    }
+    const accessToken = await userService.getAccessToken(req);
+    return res.status(accessToken.status).json(accessToken);
   }
+  // Method to find a user by email
   async findUserByEmail(req: Request, res: Response) {
-    try {
-      const user = await userService.findUserByEmail(req);
-      return res.status(user.status).json(user);
-    } catch (err: unknown) {
-      return res.status(400).json(err);
-    }
+    const foundUser = await userService.findUserByEmail(req);
+    return res.status(foundUser.status).json(foundUser);
   }
 }
 

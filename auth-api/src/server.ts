@@ -3,6 +3,7 @@ import express from "express";
 import { createPlaceholderData as db } from "./lib/placeholder-data.ts";
 import { Request, Response } from "express";
 import userRouter from "./routes/user-route.ts";
+import { StatusCodes } from "http-status-codes";
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ app.use(userRouter);
 
 app.get("/api/status", (req: Request, res: Response) => {
   return res
-    .status(200)
+    .status(StatusCodes.OK)
     .json({ service: "Auth-API", status: "up", httpStatus: 200 });
 });
 

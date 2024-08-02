@@ -1,17 +1,23 @@
+import { StatusCodes } from "http-status-codes";
+import UserException from "../modules/exception/user-exception.ts";
+
 export const getErrorMessage = (error: unknown): string => {
-  let message: string;
-
   if (error instanceof Error) {
-    message = error.message;
+    return error.message;
   } else if (error && typeof error === "object" && "message" in error) {
-    message = String(error.message);
+    return String(error.message);
   } else if (typeof error === "string") {
-    message = error;
+    return error;
   } else {
-    message = "Something went wrong";
+    return "Something went wrong";
   }
+};
 
-  return message;
+export const handleError = (err: unknown) => {
+  const status =
+    err instanceof UserException ? err.status : StatusCodes.BAD_REQUEST;
+  const message = getErrorMessage(err);
+  return { status, message };
 };
 
 // get env variable while checking if it exists, providing a default value if it doesn't
@@ -26,6 +32,6 @@ export const getEnvVariable = (name: string, defaultValue?: string): string => {
   }
 
   // return value ?? defaultValue;
-  console.log('value: ', value);
+  console.log("value:", value);
   return value;
 };
