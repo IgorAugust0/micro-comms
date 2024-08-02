@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import user from "../modules/model/user.js";
+import user from "../modules/model/user-model.ts";
 
-export default async function createPlaceholderData() {
+export async function createPlaceholderData() {
   try {
     await user.sync({ force: true });
 
