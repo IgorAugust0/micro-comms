@@ -1,0 +1,8 @@
+### Create User - JWT
+POST http://localhost:8080/api/user/auth
+Content-Type: application/json
+
+{
+  "email": "johndoe@email.com",
+  "password": "password"
+}

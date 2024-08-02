@@ -1,7 +1,10 @@
+import dotenv from "dotenv";
 import express from "express";
 import { createPlaceholderData as db } from "./lib/placeholder-data.ts";
 import { Request, Response } from "express";
 import userRouter from "./routes/user-route.ts";
+
+dotenv.config();
 
 const app = express();
 const env = process.env.NODE_ENV || "development";
