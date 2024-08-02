@@ -6,3 +6,8 @@ Content-Type: application/json
   "email": "johndoe@email.com",
   "password": "password"
 }
+
+### Get Auth status
+GET http://localhost:8080/api/status
+Authorization: Bearer <token>
+

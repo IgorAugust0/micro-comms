@@ -23,6 +23,12 @@
     },
     "outDir": "./dist",
   },
+  // https://github.com/nodejs/node/issues/48207#issuecomment-1880644283
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
+    "esm": true,
+  },
   "include": [
     "src/**/*.ts",
     "src/lib/placeholder-data.ts",

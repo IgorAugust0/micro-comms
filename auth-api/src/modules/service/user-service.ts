@@ -1,11 +1,11 @@
-import userRepository from "../repository/user-repository.ts";
-import UserException from "../exception/user-exception.ts";
-import { StatusCodes } from "http-status-codes";
-import { Request } from "express";
-import { getEnvVariable, handleError } from "../../lib/util.ts";
-import { User } from "../model/user-model.ts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import userRepository from "../repository/user-repository.ts";
+import { UserException } from "../../lib/exceptions.ts";
+import { Request } from "express";
+import { StatusCodes } from "http-status-codes";
+import { User } from "../model/user-model.ts";
+import { ACCESS_TOKEN_SECRET, handleError } from "../../lib/util.ts";
 
 class UserService {
   // Method to validate if the required fields are present
@@ -51,7 +51,7 @@ class UserService {
         },
       };
     } catch (err: unknown) {
-      return handleError(err);
+      return handleError(err, StatusCodes.BAD_REQUEST);
     }
   }
 
@@ -64,8 +64,6 @@ class UserService {
       const user = await userRepository.findUserByEmail(email);
       UserService.ensureUserExists(user);
       await UserService.validatePassword(password, user.password);
-
-      const ACCESS_TOKEN_SECRET = getEnvVariable("ACCESS_TOKEN_SECRET");
 
       const authUser = { id: user.id, name: user.name, email: user.email };
       const accessToken = jwt.sign({ authUser }, ACCESS_TOKEN_SECRET, {

@@ -1,5 +1,8 @@
 import { StatusCodes } from "http-status-codes";
-import UserException from "../modules/exception/user-exception.ts";
+import { BaseException } from "./exceptions.ts";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -13,9 +16,11 @@ export const getErrorMessage = (error: unknown): string => {
   }
 };
 
-export const handleError = (err: unknown) => {
+export const handleError = (err: unknown, customStatusCode?: number) => {
   const status =
-    err instanceof UserException ? err.status : StatusCodes.BAD_REQUEST;
+    err instanceof BaseException
+      ? err.status
+      : (customStatusCode ?? StatusCodes.INTERNAL_SERVER_ERROR);
   const message = getErrorMessage(err);
   return { status, message };
 };
@@ -35,3 +40,5 @@ export const getEnvVariable = (name: string, defaultValue?: string): string => {
   console.log("value:", value);
   return value;
 };
+
+export const ACCESS_TOKEN_SECRET = getEnvVariable("ACCESS_TOKEN_SECRET");
