@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { promisify } from "util";
 import { ACCESS_TOKEN_SECRET, handleError } from "./lib/util.ts";
 import { Request, Response, NextFunction } from "express";
-import { AuthException, BaseException } from "./lib/exceptions.ts";
+import { AuthException } from "./lib/exceptions.ts";
 import { StatusCodes } from "http-status-codes";
 import { User } from "./modules/model/user-model.ts";
 

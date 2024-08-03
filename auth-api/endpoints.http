@@ -1,4 +1,4 @@
-### Create User - JWT
+### Create User - JWT John Doe
 POST http://localhost:8080/api/user/auth
 Content-Type: application/json
 
@@ -7,7 +7,20 @@ Content-Type: application/json
   "password": "password"
 }
 
+### Create User - JWT Jane Doe
+POST http://localhost:8080/api/user/auth
+Content-Type: application/json
+
+{
+  "email": "janedoe@email.com",
+  "password": "password"
+}
+
 ### Get Auth status
 GET http://localhost:8080/api/status
-Authorization: Bearer <token>
+Authorization: Bearer
 
+
+### Get User by Email with JWT
+GET http://localhost:8080/api/user/email/janedoe@email.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoVXNlciI6eyJpZCI6MiwibmFtZSI6IkphbmUgRG9lIiwiZW1haWwiOiJqYW5lZG9lQGVtYWlsLmNvbSJ9LCJpYXQiOjE3MjI2NDg2MjEsImV4cCI6MTcyMjczNTAyMX0.dcc9WkUBBG4b6m1reiNDMIy0OJ6mgbQgb97-CLNPWcM

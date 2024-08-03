@@ -18,6 +18,13 @@ class UserService {
     }
   }
 
+  // ----------- DON'T USE IT IN PRODUCTION -----------
+  private static validateEmail(email: string) {
+    if (!email) {
+      throw new UserException(StatusCodes.BAD_REQUEST, "Email is required");
+    }
+  }
+
   // Method to ensure the user exists
   private static ensureUserExists(user: User | null): asserts user is User {
     if (!user) {
@@ -33,14 +40,26 @@ class UserService {
     }
   }
 
+  private static validateAuthUser(user: User, authUser: User | undefined) {
+    if (!authUser || user.id !== authUser.id) {
+      throw new UserException(
+        StatusCodes.FORBIDDEN,
+        "You are not authorized to perform this action"
+      );
+    }
+  }
+
   // Find a user by email
   async findUserByEmail(req: Request) {
     const { email } = req.params;
+    const { authUser } = req;
 
     try {
-      UserService.validateFields(email);
+      // UserService.validateFields(email);
+      UserService.validateEmail(email);
       const user = await userRepository.findUserByEmail(email);
       UserService.ensureUserExists(user);
+      UserService.validateAuthUser(user, authUser);
 
       return {
         status: StatusCodes.OK,

@@ -5,8 +5,6 @@ import { Request, Response } from "express";
 import userRouter from "./routes/user-route.ts";
 import { StatusCodes } from "http-status-codes";
 
-import middleware from "./middleware.ts";
-
 dotenv.config();
 
 const app = express();
@@ -17,7 +15,6 @@ db();
 
 app.use(express.json());
 app.use(userRouter);
-app.use(middleware);
 
 app.get("/api/status", (req: Request, res: Response) => {
   return res

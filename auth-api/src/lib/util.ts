@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// get error message from error object
 export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
@@ -16,6 +17,7 @@ export const getErrorMessage = (error: unknown): string => {
   }
 };
 
+// handle errors and return the status code and message
 export const handleError = (err: unknown, customStatusCode?: number) => {
   const status =
     err instanceof BaseException
