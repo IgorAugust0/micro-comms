@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @Entity
 @NoArgsConstructor
@@ -14,10 +12,10 @@ import java.util.UUID;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE) // use IDENTITY if you don't want to manually increment the ID
+    private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne
@@ -26,7 +24,7 @@ public class Product {
     private Supplier supplier;
 
     @Column(name = "supplier_id", nullable = false)
-    private UUID supplierId;
+    private Integer supplierId;
 
     @ManyToOne
 //  @JoinColumn(name = "fk_category", referencedColumnName = "id", nullable = false)
@@ -34,5 +32,8 @@ public class Product {
     private Category category;
 
     @Column(name = "category_id", nullable = false)
-    private UUID categoryId;
+    private Integer categoryId;
+
+    @Column(name = "quantity_available", nullable = false)
+    private Integer quantityAvailable;
 }
