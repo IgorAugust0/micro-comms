@@ -1,4 +1,4 @@
-package com.igor.microcomms.products_api.modules.product.model;
+package com.igor.microcomms.products_api.modules.supplier.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,4 +19,8 @@ public class Supplier {
 
     @Column(nullable = false)
     private String name;
+
+//    @CreationTimestamp
+//    @Column(name = "created_at")
+//    private LocalDateTime createdAt;
 }

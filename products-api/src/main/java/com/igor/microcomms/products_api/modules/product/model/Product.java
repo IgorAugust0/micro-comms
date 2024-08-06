@@ -1,5 +1,7 @@
 package com.igor.microcomms.products_api.modules.product.model;
 
+import com.igor.microcomms.products_api.modules.category.model.Category;
+import com.igor.microcomms.products_api.modules.supplier.model.Supplier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

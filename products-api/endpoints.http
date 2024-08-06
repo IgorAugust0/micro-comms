@@ -1,0 +1,10 @@
+### API Status
+GET http://localhost:8081/api/status
+
+### Create Category
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Description 1"
+}
