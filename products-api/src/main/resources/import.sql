@@ -44,7 +44,7 @@ INSERT INTO supplier VALUES (1000, 'Comic Supplier Co.');
 INSERT INTO supplier VALUES (1001, 'Movie Supplier Inc.');
 INSERT INTO supplier VALUES (1002, 'Book Supplier Ltd.');
 
-INSERT INTO product VALUES (1000, 1000, 'The Amazing Spider Man', 15, 1000);
+INSERT INTO product VALUES (1000, 1000 ,'The Amazing Spider Man', 15, 1000);
 INSERT INTO product VALUES (1001, 1000, 'The Avengers', 20, 1000);
 INSERT INTO product VALUES (1002, 1001, 'Inception', 10, 1001);
 INSERT INTO product VALUES (1003, 1001, 'The Dark Knight', 8, 1001);
@@ -58,5 +58,10 @@ DROP TABLE IF EXISTS supplier CASCADE;
 DROP SEQUENCE IF EXISTS category_seq;
 DROP SEQUENCE IF EXISTS supplier_seq;
 DROP SEQUENCE IF EXISTS product_seq;
+
+-- Drop all lines from all tables
+TRUNCATE TABLE product CASCADE;
+TRUNCATE TABLE category CASCADE;
+TRUNCATE TABLE supplier CASCADE;
 
 

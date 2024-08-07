@@ -1,5 +1,9 @@
 package com.igor.microcomms.products_api.modules.supplier.model;
 
+import org.springframework.beans.BeanUtils;
+
+import com.igor.microcomms.products_api.modules.supplier.dto.SupplierRequest;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +24,14 @@ public class Supplier {
     @Column(nullable = false)
     private String name;
 
+    public static Supplier of(SupplierRequest request) {
+        var supplier = new Supplier();
+        BeanUtils.copyProperties(request, supplier);
+        return supplier;
+    }
+
 //    @CreationTimestamp
 //    @Column(name = "created_at")
 //    private LocalDateTime createdAt;
+
 }

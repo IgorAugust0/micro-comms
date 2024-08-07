@@ -5,6 +5,7 @@ import com.igor.microcomms.products_api.modules.category.dto.CategoryRequest;
 import com.igor.microcomms.products_api.modules.category.dto.CategoryResponse;
 import com.igor.microcomms.products_api.modules.category.model.Category;
 import com.igor.microcomms.products_api.modules.category.repository.CategoryRepository;
+
 import org.springframework.stereotype.Service;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -16,6 +17,12 @@ public class CategoryService {
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    public Category findById(Integer id) {
+        return categoryRepository
+                .findById(id)
+                .orElseThrow(() -> new ValidationException("Category not found"));
     }
 
     // convert CategoryRequest to Category and save it

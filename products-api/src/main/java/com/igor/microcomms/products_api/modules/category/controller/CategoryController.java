@@ -1,6 +1,5 @@
 package com.igor.microcomms.products_api.modules.category.controller;
 
-
 import com.igor.microcomms.products_api.modules.category.dto.CategoryRequest;
 import com.igor.microcomms.products_api.modules.category.dto.CategoryResponse;
 import com.igor.microcomms.products_api.modules.category.service.CategoryService;
