@@ -9,6 +9,15 @@ Content-Type: application/json
   "description": "Hardware"
 }
 
+### GET All Categories
+GET http://localhost:8081/api/category/
+
+### GET Category by ID
+GET http://localhost:8081/api/category/1
+
+### GET Category by Description
+GET http://localhost:8081/api/category/description/Comic
+
 ### Create Supplier
 POST http://localhost:8081/api/supplier/
 Content-Type: application/json
