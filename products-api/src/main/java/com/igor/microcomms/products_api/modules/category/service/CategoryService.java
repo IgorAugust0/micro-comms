@@ -7,9 +7,10 @@ import com.igor.microcomms.products_api.modules.category.model.Category;
 import com.igor.microcomms.products_api.modules.category.repository.CategoryRepository;
 
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
+
+import java.util.List;
 
 @Service
 public class CategoryService {
@@ -20,36 +21,41 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    // return all categories and convert to response
+    public List<CategoryResponse> findAll() {
+        return convertToResponse(categoryRepository.findAll());
+    }
+
+    // convert Category to CategoryResponse by ID
     public CategoryResponse findByIdResponse(Integer id) {
         return CategoryResponse.of(findById(id));
     }
 
-    public List<CategoryResponse> findAll() {
-        return categoryRepository
-                .findAll()
-                .stream() // convert Category to CategoryResponse
-                .map(CategoryResponse::of) // apply CategoryResponse.of to each Category
-                .toList(); // convert Stream to List
-    }
-
+    // return categories by description and convert to response
     public List<CategoryResponse> findByDescription(String description) {
-        if (isEmpty(description)) {
-            throw new ValidationException("Category description is required");
-        }
-        return categoryRepository
-                .findByDescriptionIgnoreCaseContaining(description)
-                .stream()
-                .map(CategoryResponse::of)
-                .toList();
+        validateNotEmpty(description, "Category description is required");
+        return convertToResponse(categoryRepository.findByDescriptionIgnoreCaseContaining(description));
     }
 
+    // retrieve category by ID with validation
     public Category findById(Integer id) {
-        if (isEmpty(id)) {
-            throw new ValidationException("Category id is required");
-        }
-        return categoryRepository
-                .findById(id)
+        validateNotEmpty(id, "Category ID is required");
+        return categoryRepository.findById(id)
                 .orElseThrow(() -> new ValidationException("Category not found"));
+    }
+
+    private void validateCategoryRequest(CategoryRequest request) {
+        validateNotEmpty(request.getDescription(), "Description is required");
+    }
+
+    private void validateNotEmpty(Object value, String message) {
+        if (isEmpty(value)) {
+            throw new ValidationException(message);
+        }
+    }
+
+    private List<CategoryResponse> convertToResponse(List<Category> categories) {
+        return categories.stream().map(CategoryResponse::of).toList();
     }
 
     // convert CategoryRequest to Category and save it
@@ -59,9 +65,4 @@ public class CategoryService {
         return CategoryResponse.of(category);
     }
 
-    private void validateCategoryRequest(CategoryRequest request) {
-        if (isEmpty(request.getDescription())) {
-            throw new ValidationException("Description is required");
-        }
-    }
 }

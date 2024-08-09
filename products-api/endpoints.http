@@ -1,13 +1,7 @@
 ### API Status
 GET http://localhost:8081/api/status
 
-### Create Category
-POST http://localhost:8081/api/category/
-Content-Type: application/json
-
-{
-  "description": "Hardware"
-}
+### ----------------- CATEGORY -----------------
 
 ### GET All Categories
 GET http://localhost:8081/api/category/
@@ -18,6 +12,26 @@ GET http://localhost:8081/api/category/1
 ### GET Category by Description
 GET http://localhost:8081/api/category/description/Comic
 
+### Create Category
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Hardware"
+}
+
+
+### ----------------- SUPPLIER -----------------
+
+### GET All Suppliers
+GET http://localhost:8081/api/supplier/
+
+### GET Supplier by ID
+GET http://localhost:8081/api/supplier/1
+
+### GET Supplier by Name
+GET http://localhost:8081/api/supplier/name/Walmart
+
 ### Create Supplier
 POST http://localhost:8081/api/supplier/
 Content-Type: application/json
@@ -26,13 +40,30 @@ Content-Type: application/json
   "name": "Walmart"
 }
 
+### ----------------- PRODUCT -----------------
+
+### GET All Products
+GET http://localhost:8081/api/product/
+
+### GET Product by ID
+GET http://localhost:8081/api/product/1
+
+### GET Product by Name
+GET http://localhost:8081/api/product/name/Laptop
+
+### GET Product by Category
+GET http://localhost:8081/api/product/category/2
+
+### GET Product by Supplier
+GET http://localhost:8081/api/product/supplier/2
+
 ### Create Product
 POST http://localhost:8081/api/product/
 Content-Type: application/json
 
 {
-  "name": "Laptop",
+  "name": "Acer",
   "quantity_available": 10,
-  "supplierId": 1,
-  "categoryId": 1
+  "supplierId": 2,
+  "categoryId": 2
 }

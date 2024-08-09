@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import java.util.List;
+
 @Service
 public class SupplierService {
 
@@ -19,23 +21,42 @@ public class SupplierService {
         this.supplierRepository = supplierRepository;
     }
 
+    public List<SupplierResponse> findAll() {
+        return convertToResponse(supplierRepository.findAll());
+    }
+
     public Supplier findById(Integer id) {
-        return supplierRepository
-                .findById(id)
+        validateNotEmpty(id, "Supplier ID is required");
+        return supplierRepository.findById(id)
                 .orElseThrow(() -> new ValidationException("Supplier not found"));
     }
 
-    // convert CategoryRequest to Category and save it
+    public SupplierResponse findIdResponse(Integer id) {
+        return SupplierResponse.of(findById(id));
+    }
+
+    public List<SupplierResponse> findByName(String name) {
+        validateNotEmpty(name, "Supplier name is required");
+        return convertToResponse(supplierRepository.findByNameIgnoreCaseContaining(name));
+    }
+
+    private void validateSupplierRequest(SupplierRequest request) {
+        validateNotEmpty(request.getName(), "Name is required");
+    }
+
+    private void validateNotEmpty(Object value, String message) {
+        if (isEmpty(value)) {
+            throw new ValidationException(message);
+        }
+    }
+
+    private List<SupplierResponse> convertToResponse(List<Supplier> suppliers) {
+        return suppliers.stream().map(SupplierResponse::of).toList();
+    }
+
     public SupplierResponse save(SupplierRequest request) {
         validateSupplierRequest(request);
         var supplier = supplierRepository.save(Supplier.of(request));
         return SupplierResponse.of(supplier);
-    }
-
-    // validate if the request is not empty
-    private void validateSupplierRequest(SupplierRequest request) {
-        if (isEmpty(request.getName())) {
-            throw new ValidationException("Description is required");
-        }
     }
 }
