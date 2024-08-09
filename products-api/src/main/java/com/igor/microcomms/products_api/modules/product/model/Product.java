@@ -27,21 +27,21 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
     // @JoinColumn(name = "fk_supplier", referencedColumnName = "id", nullable = false)
+    @ManyToOne
     @JoinColumn(name = "supplier_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_supplier"))
     private Supplier supplier;
 
     @Column(name = "supplier_id", nullable = false)
-    private Integer supplierId; // might remove this later
+    private Integer supplierId;
 
-    @ManyToOne
     // @JoinColumn(name = "fk_category", referencedColumnName = "id", nullable = false)
+    @ManyToOne
     @JoinColumn(name = "category_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_category"))
     private Category category;
 
     @Column(name = "category_id", nullable = false)
-    private Integer categoryId; // might remove this later
+    private Integer categoryId;
 
     @Column(name = "quantity_available", nullable = false)
     private Integer quantityAvailable;

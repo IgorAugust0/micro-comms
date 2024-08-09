@@ -7,10 +7,10 @@ import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
+import static com.igor.microcomms.products_api.util.ResponseUtil.convertToResponse;
+import static com.igor.microcomms.products_api.util.ResponseUtil.validateNotEmpty;
 
 import org.springframework.stereotype.Service;
-
-import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> findAll() {
-        return convertToResponse(productRepository.findAll());
+        return convertToResponse(productRepository.findAll(), ProductResponse::of);
     }
 
     public Product findById(Integer id) {
@@ -44,17 +44,18 @@ public class ProductService {
 
     public List<ProductResponse> findByName(String name) {
         validateNotEmpty(name, "Product name is required");
-        return convertToResponse(productRepository.findByNameIgnoreCaseContaining(name));
+        return convertToResponse(productRepository.findByNameIgnoreCaseContaining(name),
+                ProductResponse::of);
     }
 
     public List<ProductResponse> findBySupplierId(Integer supplierId) {
         validateNotEmpty(supplierId, "Supplier ID is required");
-        return convertToResponse(productRepository.findBySupplierId(supplierId));
+        return convertToResponse(productRepository.findBySupplierId(supplierId), ProductResponse::of);
     }
 
     public List<ProductResponse> findByCategoryId(Integer categoryId) {
         validateNotEmpty(categoryId, "Category ID is required");
-        return convertToResponse(productRepository.findByCategoryId(categoryId));
+        return convertToResponse(productRepository.findByCategoryId(categoryId), ProductResponse::of);
     }
 
     private void validateProductRequest(ProductRequest request) {
@@ -63,27 +64,13 @@ public class ProductService {
         if (request.getQuantityAvailable() <= 0) {
             throw new ValidationException("Product's available quantity must be greater than or equal to 0");
         }
-    }
-
-    private void validateCategorySupplierId(ProductRequest request) {
         validateNotEmpty(request.getCategoryId(), "Category ID was not provided");
         validateNotEmpty(request.getSupplierId(), "Supplier ID was not provided");
-    }
-
-    private void validateNotEmpty(Object value, String message) {
-        if (isEmpty(value)) {
-            throw new ValidationException(message);
-        }
-    }
-
-    private List<ProductResponse> convertToResponse(List<Product> products) {
-        return products.stream().map(ProductResponse::of).toList();
     }
 
     // convert productRequest to Product and save it
     public ProductResponse save(ProductRequest request) {
         validateProductRequest(request);
-        validateCategorySupplierId(request);
         var category = categoryService.findById(request.getCategoryId());
         var supplier = supplierService.findById(request.getSupplierId());
         var product = productRepository.save(Product.of(request, supplier, category));

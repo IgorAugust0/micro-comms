@@ -5,10 +5,10 @@ import com.igor.microcomms.products_api.modules.supplier.dto.SupplierRequest;
 import com.igor.microcomms.products_api.modules.supplier.dto.SupplierResponse;
 import com.igor.microcomms.products_api.modules.supplier.model.Supplier;
 import com.igor.microcomms.products_api.modules.supplier.repository.SupplierRepository;
+import static com.igor.microcomms.products_api.util.ResponseUtil.convertToResponse;
+import static com.igor.microcomms.products_api.util.ResponseUtil.validateNotEmpty;
 
 import org.springframework.stereotype.Service;
-
-import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class SupplierService {
     }
 
     public List<SupplierResponse> findAll() {
-        return convertToResponse(supplierRepository.findAll());
+        return convertToResponse(supplierRepository.findAll(), SupplierResponse::of);
     }
 
     public Supplier findById(Integer id) {
@@ -37,21 +37,12 @@ public class SupplierService {
 
     public List<SupplierResponse> findByName(String name) {
         validateNotEmpty(name, "Supplier name is required");
-        return convertToResponse(supplierRepository.findByNameIgnoreCaseContaining(name));
+        return convertToResponse(supplierRepository.findByNameIgnoreCaseContaining(name),
+                SupplierResponse::of);
     }
 
     private void validateSupplierRequest(SupplierRequest request) {
         validateNotEmpty(request.getName(), "Name is required");
-    }
-
-    private void validateNotEmpty(Object value, String message) {
-        if (isEmpty(value)) {
-            throw new ValidationException(message);
-        }
-    }
-
-    private List<SupplierResponse> convertToResponse(List<Supplier> suppliers) {
-        return suppliers.stream().map(SupplierResponse::of).toList();
     }
 
     public SupplierResponse save(SupplierRequest request) {
