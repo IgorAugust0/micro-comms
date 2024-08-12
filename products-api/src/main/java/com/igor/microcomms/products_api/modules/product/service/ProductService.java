@@ -78,12 +78,26 @@ public class ProductService {
     public ProductResponse update(Integer id, ProductRequest request) {
         validateNotEmpty(id, "Product ID is required");
         validateProductRequest(request);
+
+        // fetch related entities
         var category = categoryService.findById(request.getCategoryId());
         var supplier = supplierService.findById(request.getSupplierId());
+
+        // update product
         var product = Product.of(request, supplier, category);
         product.setId(id);
         productRepository.save(product);
-        return ProductResponse.of(product);
+
+        // fetch timestamps
+        var createdAt = productRepository.findCreatedAtById(id);
+        var lastModified = productRepository.findLastModifiedById(id);
+
+        // build response
+        var response = ProductResponse.of(product);
+        response.setCreatedAt(createdAt);
+        response.setLastModified(lastModified);
+
+        return response;
     }
 
     public Boolean existsBySupplierId(Integer supplierId) {

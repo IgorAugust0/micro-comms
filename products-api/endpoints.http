@@ -1,7 +1,9 @@
 ### API Status
 GET http://localhost:8081/api/status
 
-### ----------------- CATEGORY -----------------
+### --------------------------------------------------------CATEGORY--------------------------------------------------------
+
+### ----------------- GET -----------------
 
 ### GET All Categories
 GET http://localhost:8081/api/category/
@@ -12,17 +14,12 @@ GET http://localhost:8081/api/category/1
 ### GET Category by Description
 GET http://localhost:8081/api/category/description/Comic
 
+### ----------------- DELETE -----------------
 
 ### DELETE Category by ID
 DELETE http://localhost:8081/api/category/1
 
-### Create Category
-POST http://localhost:8081/api/category/
-Content-Type: application/json
-
-{
-  "description": "Hardware"
-}
+### ----------------- PUT -----------------
 
 ### PUT Category by ID
 PUT http://localhost:8081/api/category/1002
@@ -32,7 +29,10 @@ Content-Type: application/json
   "description": "Music"
 }
 
-### ----------------- SUPPLIER -----------------
+
+### --------------------------------------------------------SUPPLIER--------------------------------------------------------
+
+### ----------------- GET -----------------
 
 ### GET All Suppliers
 GET http://localhost:8081/api/supplier/
@@ -43,17 +43,12 @@ GET http://localhost:8081/api/supplier/1
 ### GET Supplier by Name
 GET http://localhost:8081/api/supplier/name/Walmart
 
+### ----------------- DELETE -----------------
 
 ### DELETE Supplier by ID
 DELETE http://localhost:8081/api/supplier/52
 
-### Create Supplier
-POST http://localhost:8081/api/supplier/
-Content-Type: application/json
-
-{
-  "name": "Walmart"
-}
+### ----------------- PUT -----------------
 
 ### PUT Supplier by ID
 PUT http://localhost:8081/api/supplier/2
@@ -63,7 +58,9 @@ Content-Type: application/json
   "name": "Walmart"
 }
 
-### ----------------- PRODUCT -----------------
+### --------------------------------------------------------PRODUCT--------------------------------------------------------
+
+### ----------------- GET -----------------
 
 ### GET All Products
 GET http://localhost:8081/api/product/
@@ -80,27 +77,162 @@ GET http://localhost:8081/api/product/category/2
 ### GET Product by Supplier
 GET http://localhost:8081/api/product/supplier/2
 
+### ----------------- DELETE -----------------
+
 ### DELETE Product by ID
 DELETE http://localhost:8081/api/product/02
 
-### Create Product
+### ----------------- PUT -----------------
+
+### PUT Product by ID
+PUT http://localhost:8081/api/product/5
+Content-Type: application/json
+
+{
+  "name": "Lego Star Wars",
+  "quantity_available": 200,
+  "supplierId": 5,
+  "categoryId": 5
+}
+
+### --------------------------------------------------------POST--------------------------------------------------------
+
+### ----------------- CATEGORY -----------------
+
+### Create Category 1
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Electronics"
+}
+
+### Create Category 2
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Books"
+}
+
+### Create Category 3
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Clothing"
+}
+
+### Create Category 4
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Home Appliances"
+}
+
+### Create Category 5
+POST http://localhost:8081/api/category/
+Content-Type: application/json
+
+{
+  "description": "Toys"
+}
+
+### ----------------- SUPPLIER -----------------
+
+### Create Supplier 1
+POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Amazon"
+}
+
+### Create Supplier 2
+POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Best Buy"
+}
+
+### Create Supplier 3
+POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Target"
+}
+
+### Create Supplier 4
+POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Costco"
+}
+
+### Create Supplier 5
+POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Walmart"
+}
+
+### ----------------- PRODUCT -----------------
+### Create Product 1
 POST http://localhost:8081/api/product/
 Content-Type: application/json
 
 {
-  "name": "Acer",
-  "quantity_available": 10,
+  "name": "iPhone 13",
+  "quantity_available": 50,
+  "supplierId": 1,
+  "categoryId": 1
+}
+
+### Create Product 2
+POST http://localhost:8081/api/product/
+Content-Type: application/json
+
+{
+  "name": "Harry Potter and the Sorcerer's Stone",
+  "quantity_available": 100,
   "supplierId": 2,
   "categoryId": 2
 }
 
-### PUT Product by ID
-PUT http://localhost:8081/api/product/202
+### Create Product 3
+POST http://localhost:8081/api/product/
 Content-Type: application/json
 
 {
-  "name": "Trackpad",
-  "quantity_available": 10,
-  "supplierId": 2,
-  "categoryId": 2
+  "name": "Levi's Jeans",
+  "quantity_available": 200,
+  "supplierId": 3,
+  "categoryId": 3
+}
+
+### Create Product 4
+POST http://localhost:8081/api/product/
+Content-Type: application/json
+
+{
+  "name": "Dyson Vacuum Cleaner",
+  "quantity_available": 30,
+  "supplierId": 4,
+  "categoryId": 4
+}
+
+### Create Product 5
+POST http://localhost:8081/api/product/
+Content-Type: application/json
+
+{
+  "name": "Lego Star Wars",
+  "quantity_available": 150,
+  "supplierId": 5,
+  "categoryId": 5
 }

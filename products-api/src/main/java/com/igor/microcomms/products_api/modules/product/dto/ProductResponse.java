@@ -21,11 +21,18 @@ public class ProductResponse {
 
     private Integer id;
     private String name;
+
     @JsonProperty("quantity_available")
     private Integer quantityAvailable;
+
     @JsonProperty("created_at")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdAt;
+
+    @JsonProperty("last_modified")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime lastModified;
+
     private SupplierResponse supplier;
     private CategoryResponse category;
 
@@ -36,6 +43,7 @@ public class ProductResponse {
                 .name(product.getName())
                 .quantityAvailable(product.getQuantityAvailable())
                 .createdAt(product.getCreatedAt())
+                .lastModified(product.getLastModified())
                 .supplier(SupplierResponse.of(product.getSupplier()))
                 .category(CategoryResponse.of(product.getCategory()))
                 .build();
