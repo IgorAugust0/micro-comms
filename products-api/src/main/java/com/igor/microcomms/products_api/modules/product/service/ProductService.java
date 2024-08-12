@@ -1,5 +1,6 @@
 package com.igor.microcomms.products_api.modules.product.service;
 
+import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.config.exception.ValidationException;
 import com.igor.microcomms.products_api.modules.category.service.CategoryService;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
@@ -7,26 +8,23 @@ import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
-import static com.igor.microcomms.products_api.util.ResponseUtil.convertToResponse;
-import static com.igor.microcomms.products_api.util.ResponseUtil.validateNotEmpty;
+
+import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import static com.igor.microcomms.products_api.config.util.ResponseUtil.convertToResponse;
+import static com.igor.microcomms.products_api.config.util.ResponseUtil.validateNotEmpty;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final SupplierService supplierService;
-
-    public ProductService(ProductRepository productRepository, CategoryService categoryService,
-            SupplierService supplierService) {
-        this.productRepository = productRepository;
-        this.categoryService = categoryService;
-        this.supplierService = supplierService;
-    }
 
     public List<ProductResponse> findAll() {
         return convertToResponse(productRepository.findAll(), ProductResponse::of);
@@ -75,6 +73,22 @@ public class ProductService {
         var supplier = supplierService.findById(request.getSupplierId());
         var product = productRepository.save(Product.of(request, supplier, category));
         return ProductResponse.of(product);
+    }
+
+    public Boolean existsBySupplierId(Integer supplierId) {
+        validateNotEmpty(supplierId, "Supplier ID is required");
+        return productRepository.existsBySupplierId(supplierId);
+    }
+
+    public Boolean existsByCategoryId(Integer categoryId) {
+        validateNotEmpty(categoryId, "Category ID is required");
+        return productRepository.existsByCategoryId(categoryId);
+    }
+
+    public SuccessResponse delete(Integer id) {
+        validateNotEmpty(id, "Product ID is required");
+        productRepository.deleteById(id);
+        return SuccessResponse.create("Product deleted successfully");
     }
 
 }

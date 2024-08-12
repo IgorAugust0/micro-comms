@@ -1,11 +1,15 @@
 package com.igor.microcomms.products_api.modules.product.controller;
 
+import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.service.ProductService;
 
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,18 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/product")
+@AllArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @PostMapping("/")
-    public ProductResponse save(@RequestBody ProductRequest request) {
-        return productService.save(request);
-    }
 
     @GetMapping("/")
     public List<ProductResponse> findAll() {
@@ -51,5 +47,15 @@ public class ProductController {
     @GetMapping("category/{categoryId}")
     public List<ProductResponse> findByCategoryId(@PathVariable(value = "categoryId") Integer categoryId) {
         return productService.findByCategoryId(categoryId);
+    }
+
+    @PostMapping("/")
+    public ProductResponse save(@RequestBody ProductRequest request) {
+        return productService.save(request);
+    }
+
+    @DeleteMapping("{id}")
+    public SuccessResponse delete(@PathVariable(value = "id") Integer id) {
+        return productService.delete(id);
     }
 }

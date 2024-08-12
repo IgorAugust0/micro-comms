@@ -1,4 +1,4 @@
-package com.igor.microcomms.products_api.util;
+package com.igor.microcomms.products_api.config.util;
 
 import java.util.List;
 import java.util.function.Function;

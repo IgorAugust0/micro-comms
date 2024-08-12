@@ -1,25 +1,31 @@
 package com.igor.microcomms.products_api.modules.category.service;
 
+import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.config.exception.ValidationException;
 import com.igor.microcomms.products_api.modules.category.dto.CategoryRequest;
 import com.igor.microcomms.products_api.modules.category.dto.CategoryResponse;
 import com.igor.microcomms.products_api.modules.category.model.Category;
 import com.igor.microcomms.products_api.modules.category.repository.CategoryRepository;
-import static com.igor.microcomms.products_api.util.ResponseUtil.convertToResponse;
-import static com.igor.microcomms.products_api.util.ResponseUtil.validateNotEmpty;
+import com.igor.microcomms.products_api.modules.product.service.ProductService;
 
+import lombok.AllArgsConstructor;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import static com.igor.microcomms.products_api.config.util.ResponseUtil.convertToResponse;
+import static com.igor.microcomms.products_api.config.util.ResponseUtil.validateNotEmpty;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor(onConstructor_ = { @Lazy })
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    @Lazy
+    private final ProductService productService;
 
     // return all categories and convert to response
     public List<CategoryResponse> findAll() {
@@ -45,7 +51,7 @@ public class CategoryService {
                 CategoryResponse::of);
     }
 
-    //
+    // validate CategoryRequest description is not empty
     private void validateCategoryRequest(CategoryRequest request) {
         validateNotEmpty(request.getDescription(), "Description is required");
     }
@@ -55,6 +61,16 @@ public class CategoryService {
         validateCategoryRequest(request);
         var category = categoryRepository.save(Category.of(request));
         return CategoryResponse.of(category);
+    }
+
+    // delete category by ID
+    public SuccessResponse delete(Integer id) {
+        validateNotEmpty(id, "Category ID is required");
+        if (productService.existsByCategoryId(id)) {
+            throw new ValidationException("Category is in use");
+        }
+        categoryRepository.deleteById(id);
+        return SuccessResponse.create("Category deleted successfully");
     }
 
 }

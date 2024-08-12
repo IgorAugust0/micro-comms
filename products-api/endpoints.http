@@ -12,6 +12,9 @@ GET http://localhost:8081/api/category/1
 ### GET Category by Description
 GET http://localhost:8081/api/category/description/Comic
 
+### DELETE Category by ID
+DELETE http://localhost:8081/api/category/1
+
 ### Create Category
 POST http://localhost:8081/api/category/
 Content-Type: application/json
@@ -32,6 +35,9 @@ GET http://localhost:8081/api/supplier/1
 ### GET Supplier by Name
 GET http://localhost:8081/api/supplier/name/Walmart
 
+### DELETE Supplier by ID
+DELETE http://localhost:8081/api/supplier/1
+
 ### Create Supplier
 POST http://localhost:8081/api/supplier/
 Content-Type: application/json
@@ -46,7 +52,7 @@ Content-Type: application/json
 GET http://localhost:8081/api/product/
 
 ### GET Product by ID
-GET http://localhost:8081/api/product/1
+GET http://localhost:8081/api/product/102
 
 ### GET Product by Name
 GET http://localhost:8081/api/product/name/Laptop
@@ -56,6 +62,9 @@ GET http://localhost:8081/api/product/category/2
 
 ### GET Product by Supplier
 GET http://localhost:8081/api/product/supplier/2
+
+### DELETE Product by ID
+DELETE http://localhost:8081/api/product/102
 
 ### Create Product
 POST http://localhost:8081/api/product/

@@ -1,9 +1,13 @@
 package com.igor.microcomms.products_api.modules.supplier.controller;
 
+import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.modules.supplier.dto.SupplierRequest;
 import com.igor.microcomms.products_api.modules.supplier.dto.SupplierResponse;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
 
+import lombok.AllArgsConstructor;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,18 +19,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/supplier")
+@AllArgsConstructor
 public class SupplierController {
 
     private final SupplierService supplierService;
-
-    public SupplierController(SupplierService supplierService) {
-        this.supplierService = supplierService;
-    }
-
-    @PostMapping("/")
-    public SupplierResponse save(@RequestBody SupplierRequest request) {
-        return supplierService.save(request);
-    }
 
     @GetMapping("/")
     public List<SupplierResponse> findAll() {
@@ -42,4 +38,15 @@ public class SupplierController {
     public List<SupplierResponse> findByName(@PathVariable(value = "name") String name) {
         return supplierService.findByName(name);
     }
+
+    @PostMapping("/")
+    public SupplierResponse save(@RequestBody SupplierRequest request) {
+        return supplierService.save(request);
+    }
+
+    @DeleteMapping("{id}")
+    public SuccessResponse delete(@PathVariable(value = "id") Integer id) {
+        return supplierService.delete(id);
+    }
+
 }
