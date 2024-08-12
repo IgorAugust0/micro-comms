@@ -12,6 +12,7 @@ GET http://localhost:8081/api/category/1
 ### GET Category by Description
 GET http://localhost:8081/api/category/description/Comic
 
+
 ### DELETE Category by ID
 DELETE http://localhost:8081/api/category/1
 
@@ -23,6 +24,13 @@ Content-Type: application/json
   "description": "Hardware"
 }
 
+### PUT Category by ID
+PUT http://localhost:8081/api/category/1002
+Content-Type: application/json
+
+{
+  "description": "Music"
+}
 
 ### ----------------- SUPPLIER -----------------
 
@@ -35,11 +43,20 @@ GET http://localhost:8081/api/supplier/1
 ### GET Supplier by Name
 GET http://localhost:8081/api/supplier/name/Walmart
 
+
 ### DELETE Supplier by ID
-DELETE http://localhost:8081/api/supplier/1
+DELETE http://localhost:8081/api/supplier/52
 
 ### Create Supplier
 POST http://localhost:8081/api/supplier/
+Content-Type: application/json
+
+{
+  "name": "Walmart"
+}
+
+### PUT Supplier by ID
+PUT http://localhost:8081/api/supplier/2
 Content-Type: application/json
 
 {
@@ -52,7 +69,7 @@ Content-Type: application/json
 GET http://localhost:8081/api/product/
 
 ### GET Product by ID
-GET http://localhost:8081/api/product/102
+GET http://localhost:8081/api/product/202
 
 ### GET Product by Name
 GET http://localhost:8081/api/product/name/Laptop
@@ -64,7 +81,7 @@ GET http://localhost:8081/api/product/category/2
 GET http://localhost:8081/api/product/supplier/2
 
 ### DELETE Product by ID
-DELETE http://localhost:8081/api/product/102
+DELETE http://localhost:8081/api/product/02
 
 ### Create Product
 POST http://localhost:8081/api/product/
@@ -72,6 +89,17 @@ Content-Type: application/json
 
 {
   "name": "Acer",
+  "quantity_available": 10,
+  "supplierId": 2,
+  "categoryId": 2
+}
+
+### PUT Product by ID
+PUT http://localhost:8081/api/product/202
+Content-Type: application/json
+
+{
+  "name": "Trackpad",
   "quantity_available": 10,
   "supplierId": 2,
   "categoryId": 2

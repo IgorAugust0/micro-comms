@@ -63,6 +63,17 @@ public class CategoryService {
         return CategoryResponse.of(category);
     }
 
+    public CategoryResponse update(Integer id, CategoryRequest request) {
+        validateNotEmpty(id, "Category ID is required");
+        validateCategoryRequest(request);
+        var category = Category.of(request);
+        // var category = findById(id);
+        // category.setDescription(request.getDescription());
+        category.setId(id);
+        categoryRepository.save(category);
+        return CategoryResponse.of(category);
+    }
+
     // delete category by ID
     public SuccessResponse delete(Integer id) {
         validateNotEmpty(id, "Category ID is required");

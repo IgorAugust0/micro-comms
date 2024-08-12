@@ -8,6 +8,7 @@ import com.igor.microcomms.products_api.modules.category.service.CategoryService
 import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +43,11 @@ public class CategoryController {
     @PostMapping("/")
     public CategoryResponse save(@RequestBody CategoryRequest request) {
         return categoryService.save(request);
+    }
+
+    @PutMapping("{id}")
+    public CategoryResponse update(@PathVariable(value = "id") Integer id, @RequestBody CategoryRequest request) {
+        return categoryService.update(id, request);
     }
 
     @DeleteMapping("{id}")

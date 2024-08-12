@@ -75,6 +75,17 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
+    public ProductResponse update(Integer id, ProductRequest request) {
+        validateNotEmpty(id, "Product ID is required");
+        validateProductRequest(request);
+        var category = categoryService.findById(request.getCategoryId());
+        var supplier = supplierService.findById(request.getSupplierId());
+        var product = Product.of(request, supplier, category);
+        product.setId(id);
+        productRepository.save(product);
+        return ProductResponse.of(product);
+    }
+
     public Boolean existsBySupplierId(Integer supplierId) {
         validateNotEmpty(supplierId, "Supplier ID is required");
         return productRepository.existsBySupplierId(supplierId);

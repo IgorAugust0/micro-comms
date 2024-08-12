@@ -56,6 +56,17 @@ public class SupplierService {
         return SupplierResponse.of(supplier);
     }
 
+    public SupplierResponse update(Integer id, SupplierRequest request) {
+        validateNotEmpty(id, "Supplier ID is required");
+        validateSupplierRequest(request);
+        var supplier = Supplier.of(request);
+        // var supplier = findById(id);
+        // supplier.setName(request.getName());
+        supplier.setId(id);
+        supplierRepository.save(supplier);
+        return SupplierResponse.of(supplier);
+    }
+
     public SuccessResponse delete(Integer id) {
         validateNotEmpty(id, "Supplier ID is required");
         if (productService.existsBySupplierId(id)) {
