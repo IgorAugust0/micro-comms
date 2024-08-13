@@ -22,7 +22,7 @@ DELETE http://localhost:8081/api/category/1
 ### ----------------- PUT -----------------
 
 ### PUT Category by ID
-PUT http://localhost:8081/api/category/1002
+PUT http://localhost:8081/api/category/5
 Content-Type: application/json
 
 {
@@ -89,8 +89,8 @@ PUT http://localhost:8081/api/product/5
 Content-Type: application/json
 
 {
-  "name": "Lego Star Wars",
-  "quantity_available": 200,
+  "name": "Star Wars: Jedi Survivor",
+  "quantity_available": 250,
   "supplierId": 5,
   "categoryId": 5
 }
