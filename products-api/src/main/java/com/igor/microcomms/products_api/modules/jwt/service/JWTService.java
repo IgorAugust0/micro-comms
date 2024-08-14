@@ -15,13 +15,18 @@ import static com.igor.microcomms.products_api.config.util.ResponseUtil.validate
 @Service
 public class JWTService {
 
+    private static final String EMPTY_SPACE = " ";
+    private static final Integer TOKEN_INDEX = 1;
+
     @Value("${security.token.secret}")
     private String secretKey;
 
     public void validateToken(String token) {
+        System.out.println("Secret key: " + secretKey); // for testing purposes only
+        var accessToken = retrieveToken(token);
+        var key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
         try {
-            var accessToken = retrieveToken(token);
-            var key = Keys.hmacShaKeyFor(secretKey.getBytes());
             var claims = Jwts
                     .parser() // parserBuilder()
                     .verifyWith(key) // setSigningKey(key)
@@ -38,7 +43,7 @@ public class JWTService {
 
     private String retrieveToken(String token) {
         validateNotEmpty(token, "Token not provided", ExceptionType.AUTHENTICATION);
-        return token.contains(" ") ? token.split(" ")[1] : token;
+        return token.contains(EMPTY_SPACE) ? token.split(EMPTY_SPACE)[TOKEN_INDEX] : token;
     }
 
     private void validateUserAndIdNotEmpty(JWTResponse user) {

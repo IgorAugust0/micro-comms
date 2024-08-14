@@ -7,23 +7,29 @@ GET http://localhost:8081/api/status
 
 ### GET All Categories
 GET http://localhost:8081/api/category/
+Authorization: Bearer <token>
 
 ### GET Category by ID
 GET http://localhost:8081/api/category/1
+Authorization: Bearer <token>
+
 
 ### GET Category by Description
 GET http://localhost:8081/api/category/description/Comic
+Authorization: Bearer <token>
 
 ### ----------------- DELETE -----------------
 
 ### DELETE Category by ID
 DELETE http://localhost:8081/api/category/1
+Authorization: Bearer <token>
 
 ### ----------------- PUT -----------------
 
 ### PUT Category by ID
 PUT http://localhost:8081/api/category/5
 Content-Type: application/json
+Authorization: Bearer <token>
 
 {
   "description": "Music"
@@ -36,23 +42,28 @@ Content-Type: application/json
 
 ### GET All Suppliers
 GET http://localhost:8081/api/supplier/
+Authorization: Bearer <token>
 
 ### GET Supplier by ID
 GET http://localhost:8081/api/supplier/1
+Authorization: Bearer <token>
 
 ### GET Supplier by Name
 GET http://localhost:8081/api/supplier/name/Walmart
+Authorization: Bearer <token>
 
 ### ----------------- DELETE -----------------
 
 ### DELETE Supplier by ID
 DELETE http://localhost:8081/api/supplier/52
+Authorization: Bearer <token>
 
 ### ----------------- PUT -----------------
 
 ### PUT Supplier by ID
 PUT http://localhost:8081/api/supplier/2
 Content-Type: application/json
+Authorization: Bearer <token>
 
 {
   "name": "Walmart"
@@ -64,33 +75,40 @@ Content-Type: application/json
 
 ### GET All Products
 GET http://localhost:8081/api/product/
+Authorization: Bearer <token>
 
 ### GET Product by ID
-GET http://localhost:8081/api/product/202
+GET http://localhost:8081/api/product/5
+Authorization: Bearer <token>
 
 ### GET Product by Name
 GET http://localhost:8081/api/product/name/Laptop
+Authorization: Bearer <token>
 
 ### GET Product by Category
 GET http://localhost:8081/api/product/category/2
+Authorization: Bearer <token>
 
 ### GET Product by Supplier
 GET http://localhost:8081/api/product/supplier/2
+Authorization: Bearer <token>
 
 ### ----------------- DELETE -----------------
 
 ### DELETE Product by ID
 DELETE http://localhost:8081/api/product/02
+Authorization: Bearer <token>
 
 ### ----------------- PUT -----------------
 
 ### PUT Product by ID
 PUT http://localhost:8081/api/product/5
 Content-Type: application/json
+Authorization: Bearer <token>
 
 {
   "name": "Star Wars: Jedi Survivor",
-  "quantity_available": 250,
+  "quantity_available": 350,
   "supplierId": 5,
   "categoryId": 5
 }

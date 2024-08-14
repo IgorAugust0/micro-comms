@@ -7,7 +7,7 @@ import {
 } from "sequelize";
 import sequelize from "../../config/db/db-config.ts";
 
-// ref: https://sequelize.org/docs/v6/other-topics/typescript/
+// ref: https://sequelize.org/docs/v6/other-topics/typescript/#usage
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
   declare name: string;

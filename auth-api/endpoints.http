@@ -18,9 +18,9 @@ Content-Type: application/json
 
 ### Get Auth status
 GET http://localhost:8080/api/status
-Authorization: Bearer
+Authorization: Bearer <token>
 
 
 ### Get User by Email with JWT
-GET http://localhost:8080/api/user/email/janedoe@email.com
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoVXNlciI6eyJpZCI6MiwibmFtZSI6IkphbmUgRG9lIiwiZW1haWwiOiJqYW5lZG9lQGVtYWlsLmNvbSJ9LCJpYXQiOjE3MjI2NDg2MjEsImV4cCI6MTcyMjczNTAyMX0.dcc9WkUBBG4b6m1reiNDMIy0OJ6mgbQgb97-CLNPWcM
+GET http://localhost:8080/api/user/email/johndoe@email.com
+Authorization: Bearer <token>
