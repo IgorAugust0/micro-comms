@@ -23,6 +23,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         var authorization = request.getHeader("Authorization");
         jwtService.validateToken(authorization);
+        // jwtService.validateTokenAuth0(authorization);
         return true;
     }
 

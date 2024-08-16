@@ -1,5 +1,47 @@
-{"properties": [{
-  "name": "security.token.secret",
-  "type": "java.lang.String",
-  "description": "The secret used to sign the JWT token"
-}]}
+{"properties": [
+  {
+    "name": "app.jwt.key",
+    "type": "java.lang.String",
+    "description": "The secret used to sign the JWT token'"
+  },
+  {
+    "name": "app.jwt.algorithm",
+    "type": "java.lang.String",
+    "description": "The algorithm used to sign the JWT token"
+  },
+  {
+    "name": "app.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "The issuer of the JWT token"
+  },
+  {
+    "name": "app.jwt.expires-in",
+    "type": "java.lang.String",
+    "description": "The expiration time of the JWT token"
+  },
+  {
+    "name": "app.rabbit.exchange.product",
+    "type": "java.lang.String",
+    "description": "The exchange used to send product messages"
+  },
+  {
+    "name": "app.rabbit.routingKey.product-stock",
+    "type": "java.lang.String",
+    "description": "The routing key used to send product stock messages"
+  },
+  {
+    "name": "app.rabbit.routingKey.sales-confirmation",
+    "type": "java.lang.String",
+    "description": "The routing key used to send sales confirmation messages"
+  },
+  {
+    "name": "app.rabbit.queue.product-stock",
+    "type": "java.lang.String",
+    "description": "The queue used to receive product stock messages"
+  },
+  {
+    "name": "app.rabbit.queue.sales-confirmation",
+    "type": "java.lang.String",
+    "description": "The queue used to receive sales confirmation messages"
+  }
+]}

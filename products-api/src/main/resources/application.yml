@@ -1,0 +1,45 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  application:
+    name: products_api
+
+  main:
+    allow-bean-definition-overriding: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/product-db}
+    username: ${DATABASE_USERNAME:admin}
+    password: ${DATABASE_PASSWORD:123456}
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+app:
+  rabbit:
+    exchange:
+      product: product.topic
+    routingKey:
+      product-stock: product-stock-update.routingKey
+      sales-confirmation: sales-confirmation.routingKey
+    queue:
+      product-stock: product-stock-update.queue
+      sales-confirmation: sales-confirmation.queue
+
+  jwt:
+    key: ${ACCESS_TOKEN_SECRET:CrAkc9r01rAeZasbq1buytjWEVVAFjEq08lBCWqmfDo=}
+    # algorithm: ${ACCESS_TOKEN_ALGORITHM:HS256}
+    # issuer: ${ACCESS_TOKEN_ISSUER:products-api}
+    # expires-in: ${ACCESS_TOKEN_EXPIRES_IN:3600}

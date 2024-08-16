@@ -3,6 +3,9 @@ package com.igor.microcomms.products_api.modules.jwt.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.igor.microcomms.products_api.config.exception.AuthenticationException;
 import com.igor.microcomms.products_api.config.util.ResponseUtil.ExceptionType;
 import com.igor.microcomms.products_api.modules.jwt.dto.JWTResponse;
@@ -18,9 +21,10 @@ public class JWTService {
     private static final String EMPTY_SPACE = " ";
     private static final Integer TOKEN_INDEX = 1;
 
-    @Value("${security.token.secret}")
+    @Value("${app.jwt.key}")
     private String secretKey;
 
+    // jjwt
     public void validateToken(String token) {
         System.out.println("Secret key: " + secretKey); // for testing purposes only
         var accessToken = retrieveToken(token);
@@ -39,6 +43,28 @@ public class JWTService {
             ex.printStackTrace();
             throw new AuthenticationException("Token verification failed");
         }
+    }
+
+    // auth0
+    public String validateTokenAuth0(String token) {
+        var accessToken = retrieveToken(token);
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+        try {
+            var subject = JWT
+                    .require(algorithm)
+                    .build()
+                    .verify(accessToken)
+                    .getSubject();
+            var decodedJWT = JWT.decode(accessToken);
+            var user = JWTResponse.getUser(decodedJWT);
+            validateUserAndIdNotEmpty(user);
+            return subject;
+        } catch (JWTVerificationException ex) {
+            ex.printStackTrace();
+            throw new AuthenticationException("Token verification failed");
+        }
+
     }
 
     private String retrieveToken(String token) {

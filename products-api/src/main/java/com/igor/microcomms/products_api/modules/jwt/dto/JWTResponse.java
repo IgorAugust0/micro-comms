@@ -19,7 +19,7 @@ public class JWTResponse {
     private String name;
     private String email;
 
-    // with jjwt
+    // jjwt
     public static JWTResponse getUser(Claims claims) {
         try {
             return new ObjectMapper().convertValue(claims.get("authUser"), JWTResponse.class);
@@ -29,7 +29,7 @@ public class JWTResponse {
         }
     }
 
-    // with auth0 jwt
+    // auth0
     public static JWTResponse getUser(DecodedJWT jwt) {
         try {
             var claims = jwt.getClaim("authUser").asMap();
