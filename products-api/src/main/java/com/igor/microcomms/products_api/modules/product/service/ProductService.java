@@ -5,6 +5,7 @@ import com.igor.microcomms.products_api.config.exception.ValidationException;
 import com.igor.microcomms.products_api.modules.category.service.CategoryService;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
+import com.igor.microcomms.products_api.modules.product.dto.ProductStockDTO;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
@@ -114,6 +115,10 @@ public class ProductService {
         validateNotEmpty(id, "Product ID is required");
         productRepository.deleteById(id);
         return SuccessResponse.create("Product deleted successfully");
+    }
+
+    public void updateProductStock(ProductStockDTO product) {
+        
     }
 
 }

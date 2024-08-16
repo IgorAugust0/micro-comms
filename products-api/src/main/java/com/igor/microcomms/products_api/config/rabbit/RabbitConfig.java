@@ -45,7 +45,7 @@ public class RabbitConfig {
 
     @Bean
     // redirects the messages from the exchange to the queues
-    public Binding productStockMqBinding(TopicExchange topicExchange) {
+    public Binding productStockQueueBinding(TopicExchange topicExchange) {
         return BindingBuilder
                 .bind(productStockQueue()) // this queue is binded
                 .to(topicExchange) // to this exchange
@@ -53,7 +53,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding salesConfirmationMqBinding(TopicExchange topicExchange) {
+    public Binding salesConfirmationQueueBinding(TopicExchange topicExchange) {
         return BindingBuilder
                 .bind(salesConfirmationQueue())
                 .to(topicExchange)
