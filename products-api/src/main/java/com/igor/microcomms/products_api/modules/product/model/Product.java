@@ -68,4 +68,8 @@ public class Product {
                 .categoryId(request.getCategoryId())
                 .build();
     }
+
+    public void updateStock(Integer quantity) {
+        this.quantityAvailable -= quantity;
+    }
 }

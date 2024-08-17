@@ -3,14 +3,19 @@ package com.igor.microcomms.products_api.modules.product.service;
 import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.config.exception.ValidationException;
 import com.igor.microcomms.products_api.modules.category.service.CategoryService;
+import com.igor.microcomms.products_api.modules.product.dto.ProductQuantityDTO;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductStockDTO;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
+import com.igor.microcomms.products_api.modules.sales.dto.SalesConfirmationDTO;
+import com.igor.microcomms.products_api.modules.sales.enums.SalesStatus;
+import com.igor.microcomms.products_api.modules.sales.rabbitmq.SalesConfirmationSender;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,7 @@ import static com.igor.microcomms.products_api.config.util.ResponseUtil.validate
 
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ProductService {
@@ -26,6 +32,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final SupplierService supplierService;
+    private final SalesConfirmationSender salesConfirmationSender;
 
     public List<ProductResponse> findAll() {
         return convertToResponse(productRepository.findAll(), ProductResponse::of);
@@ -117,8 +124,44 @@ public class ProductService {
         return SuccessResponse.create("Product deleted successfully");
     }
 
+    private void validateStockUpdate(ProductStockDTO product) {
+        validateNotEmpty(product, "Product data is required");
+        validateNotEmpty(product.getSalesId(), "Sales ID is required");
+        validateNotEmpty(product.getProducts(), "Product list is required");
+        product.getProducts().forEach(p -> {
+            validateNotEmpty(p.getProductId(), "Product ID is required");
+            validateNotEmpty(p.getQuantity(), "Product quantity is required");
+        });
+    }
+
+    private void validateQuantityInStock(ProductQuantityDTO salesProduct, Product existingProduct) {
+        var isStockAvailable = existingProduct.getQuantityAvailable() >= salesProduct.getQuantity();
+        var exceptionMessage = String.format("Product %s has insufficient stock", existingProduct.getName());
+        if (!isStockAvailable)
+            throw new ValidationException(exceptionMessage);
+    }
+
+    private void updateStock(ProductStockDTO product) {
+        product.getProducts().forEach(salesProduct -> {
+            var existingProduct = findById(salesProduct.getProductId());
+            validateQuantityInStock(salesProduct, existingProduct);
+            existingProduct.updateStock(salesProduct.getQuantity());
+            productRepository.save(existingProduct);
+            var approvedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.APPROVED);
+            salesConfirmationSender.sendSalesConfirmationMessage(approvedMessage);
+        });
+    }
+
     public void updateProductStock(ProductStockDTO product) {
-        
+        try {
+            validateStockUpdate(product);
+            updateStock(product);
+        } catch (Exception e) {
+            log.error("Error updating product stock: {}", e.getMessage(), e);
+            var rejectedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.REJECTED);
+            salesConfirmationSender.sendSalesConfirmationMessage(rejectedMessage);
+
+        }
     }
 
 }
