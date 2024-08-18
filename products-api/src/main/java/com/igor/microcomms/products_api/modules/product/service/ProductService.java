@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.igor.microcomms.products_api.config.util.ResponseUtil.convertToResponse;
 import static com.igor.microcomms.products_api.config.util.ResponseUtil.validateNotEmpty;
@@ -33,6 +34,10 @@ public class ProductService {
     private final CategoryService categoryService;
     private final SupplierService supplierService;
     private final SalesConfirmationSender salesConfirmationSender;
+
+    // ===========================
+    // Product Retrieval Methods
+    // ===========================
 
     public List<ProductResponse> findAll() {
         return convertToResponse(productRepository.findAll(), ProductResponse::of);
@@ -50,29 +55,25 @@ public class ProductService {
 
     public List<ProductResponse> findByName(String name) {
         validateNotEmpty(name, "Product name is required");
-        return convertToResponse(productRepository.findByNameIgnoreCaseContaining(name),
-                ProductResponse::of);
+        var products = productRepository.findByNameIgnoreCaseContaining(name);
+        return convertToResponse(products, ProductResponse::of);
     }
 
     public List<ProductResponse> findBySupplierId(Integer supplierId) {
         validateNotEmpty(supplierId, "Supplier ID is required");
-        return convertToResponse(productRepository.findBySupplierId(supplierId), ProductResponse::of);
+        var supplier = productRepository.findBySupplierId(supplierId);
+        return convertToResponse(supplier, ProductResponse::of);
     }
 
     public List<ProductResponse> findByCategoryId(Integer categoryId) {
         validateNotEmpty(categoryId, "Category ID is required");
-        return convertToResponse(productRepository.findByCategoryId(categoryId), ProductResponse::of);
+        var category = productRepository.findByCategoryId(categoryId);
+        return convertToResponse(category, ProductResponse::of);
     }
 
-    private void validateProductRequest(ProductRequest request) {
-        validateNotEmpty(request.getName(), "Product name was not provided");
-        validateNotEmpty(request.getQuantityAvailable(), "Product's available quantity was not provided");
-        if (request.getQuantityAvailable() <= 0) {
-            throw new ValidationException("Product's available quantity must be greater than or equal to 0");
-        }
-        validateNotEmpty(request.getCategoryId(), "Category ID was not provided");
-        validateNotEmpty(request.getSupplierId(), "Supplier ID was not provided");
-    }
+    // ===========================
+    // Product Management Methods
+    // ===========================
 
     // convert productRequest to Product and save it
     public ProductResponse save(ProductRequest request) {
@@ -108,6 +109,16 @@ public class ProductService {
         return response;
     }
 
+    public SuccessResponse delete(Integer id) {
+        validateNotEmpty(id, "Product ID is required");
+        productRepository.deleteById(id);
+        return SuccessResponse.create("Product deleted successfully");
+    }
+
+    // ===========================
+    // Product Existence Check Methods
+    // ===========================
+
     public Boolean existsBySupplierId(Integer supplierId) {
         validateNotEmpty(supplierId, "Supplier ID is required");
         return productRepository.existsBySupplierId(supplierId);
@@ -118,13 +129,53 @@ public class ProductService {
         return productRepository.existsByCategoryId(categoryId);
     }
 
-    public SuccessResponse delete(Integer id) {
-        validateNotEmpty(id, "Product ID is required");
-        productRepository.deleteById(id);
-        return SuccessResponse.create("Product deleted successfully");
+    // ===========================
+    // Stock Management Methods
+    // ===========================
+
+    @Transactional // update stock in a transactional manner, rollback if any exception occurs
+    private void updateStock(ProductStockDTO product) {
+        var updatedProducts = product.getProducts().stream().map(salesProduct -> {
+            var existingProduct = findById(salesProduct.getProductId());
+            checkStockAvailability(salesProduct, existingProduct);
+            existingProduct.updateStock(salesProduct.getQuantity());
+            return existingProduct;
+        }).toList();
+
+        validateNotEmpty(updatedProducts, "No products to update");
+        productRepository.saveAll(updatedProducts);
+
+        var approvedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.APPROVED);
+        salesConfirmationSender.sendSalesConfirmationMessage(approvedMessage);
     }
 
-    private void validateStockUpdate(ProductStockDTO product) {
+    public void updateProductStock(ProductStockDTO product) {
+        try {
+            checkStockUpdate(product);
+            updateStock(product);
+        } catch (Exception e) {
+            log.error("Error updating product stock: {}", e.getMessage(), e);
+            var rejectedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.REJECTED);
+            salesConfirmationSender.sendSalesConfirmationMessage(rejectedMessage);
+
+        }
+    }
+
+    // ===========================
+    // Validation Methods
+    // ===========================
+
+    private void validateProductRequest(ProductRequest request) {
+        validateNotEmpty(request.getName(), "Product name was not provided");
+        validateNotEmpty(request.getQuantityAvailable(), "Product's available quantity was not provided");
+        if (request.getQuantityAvailable() <= 0) {
+            throw new ValidationException("Product's available quantity must be greater than or equal to 0");
+        }
+        validateNotEmpty(request.getCategoryId(), "Category ID was not provided");
+        validateNotEmpty(request.getSupplierId(), "Supplier ID was not provided");
+    }
+
+    private void checkStockUpdate(ProductStockDTO product) {
         validateNotEmpty(product, "Product data is required");
         validateNotEmpty(product.getSalesId(), "Sales ID is required");
         validateNotEmpty(product.getProducts(), "Product list is required");
@@ -134,34 +185,11 @@ public class ProductService {
         });
     }
 
-    private void validateQuantityInStock(ProductQuantityDTO salesProduct, Product existingProduct) {
+    private void checkStockAvailability(ProductQuantityDTO salesProduct, Product existingProduct) {
         var isStockAvailable = existingProduct.getQuantityAvailable() >= salesProduct.getQuantity();
         var exceptionMessage = String.format("Product %s has insufficient stock", existingProduct.getName());
         if (!isStockAvailable)
             throw new ValidationException(exceptionMessage);
-    }
-
-    private void updateStock(ProductStockDTO product) {
-        product.getProducts().forEach(salesProduct -> {
-            var existingProduct = findById(salesProduct.getProductId());
-            validateQuantityInStock(salesProduct, existingProduct);
-            existingProduct.updateStock(salesProduct.getQuantity());
-            productRepository.save(existingProduct);
-            var approvedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.APPROVED);
-            salesConfirmationSender.sendSalesConfirmationMessage(approvedMessage);
-        });
-    }
-
-    public void updateProductStock(ProductStockDTO product) {
-        try {
-            validateStockUpdate(product);
-            updateStock(product);
-        } catch (Exception e) {
-            log.error("Error updating product stock: {}", e.getMessage(), e);
-            var rejectedMessage = new SalesConfirmationDTO(product.getSalesId(), SalesStatus.REJECTED);
-            salesConfirmationSender.sendSalesConfirmationMessage(rejectedMessage);
-
-        }
     }
 
 }

@@ -254,3 +254,24 @@ Content-Type: application/json
   "supplierId": 5,
   "categoryId": 5
 }
+
+### --------------------------------------------------------RABBIT--------------------------------------------------------
+
+### Manually publish message into queue in RabbitMQ management console
+{
+  "salesId": "6a7b8c9d",
+  "products": [
+    {
+      "productId": 1,
+      "quantity": 10
+    },
+    {
+      "productId": 2,
+      "quantity": 10
+    },
+    {
+      "productId": 3,
+      "quantity": 20
+    }
+  ]
+}
