@@ -1,15 +1,19 @@
 package com.igor.microcomms.products_api.modules.product.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.config.exception.ValidationException;
 import com.igor.microcomms.products_api.modules.category.service.CategoryService;
 import com.igor.microcomms.products_api.modules.product.dto.ProductQuantityDTO;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
+import com.igor.microcomms.products_api.modules.product.dto.ProductSalesResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductStockDTO;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
+import com.igor.microcomms.products_api.modules.sales.client.SalesClient;
 import com.igor.microcomms.products_api.modules.sales.dto.SalesConfirmationDTO;
+import com.igor.microcomms.products_api.modules.sales.dto.SalesProductResponse;
 import com.igor.microcomms.products_api.modules.sales.enums.SalesStatus;
 import com.igor.microcomms.products_api.modules.sales.rabbitmq.SalesConfirmationSender;
 import com.igor.microcomms.products_api.modules.supplier.service.SupplierService;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.igor.microcomms.products_api.config.util.ResponseUtil.convertToResponse;
 import static com.igor.microcomms.products_api.config.util.ResponseUtil.validateNotEmpty;
+import static com.igor.microcomms.products_api.config.util.RequestUtil.getCurrentRequest;
 
 import java.util.List;
 
@@ -30,10 +35,16 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductService {
 
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String TRANSACTION_ID = "transactionid";
+    private static final String SERVICE_ID = "serviceid";
+
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final SupplierService supplierService;
     private final SalesConfirmationSender salesConfirmationSender;
+    private final SalesClient salesClient;
+    private final ObjectMapper objectMapper;
 
     // ===========================
     // Product Retrieval Methods
@@ -69,6 +80,40 @@ public class ProductService {
         validateNotEmpty(categoryId, "Category ID is required");
         var category = productRepository.findByCategoryId(categoryId);
         return convertToResponse(category, ProductResponse::of);
+    }
+
+    // ===========================
+    // Product Sales Methods
+    // ===========================
+
+    private SalesProductResponse getSalesByProductId(Integer productId) {
+        try {
+            var currentRequest = getCurrentRequest();
+            var token = currentRequest.getHeader(AUTHORIZATION);
+            var transactionId = currentRequest.getHeader(TRANSACTION_ID);
+            var serviceId = currentRequest.getAttribute(SERVICE_ID);
+
+            log.info("Sending GET request to orders by productId with data {} | [transactionID: {} | serviceID: {}]",
+                    productId, transactionId, serviceId);
+
+            var response = salesClient
+                    .findSalesByProductId(productId, token, transactionId)
+                    .orElseThrow(() -> new ValidationException("The sales was not found by this product."));
+
+            log.info("Receiving response from orders by productId with data {} | [transactionID: {} | serviceID: {}]",
+                    objectMapper.writeValueAsString(response), transactionId, serviceId);
+
+            return response;
+        } catch (Exception e) {
+            log.error("Error trying to call Sales-API: {}", e.getMessage());
+            throw new ValidationException("The sales could not be found.");
+        }
+    }
+
+    public ProductSalesResponse findProductSales(Integer id) {
+        var product = findById(id);
+        var sales = getSalesByProductId(product.getId());
+        return ProductSalesResponse.of(product, sales.getSalesIds());
     }
 
     // ===========================
@@ -111,6 +156,8 @@ public class ProductService {
 
     public SuccessResponse delete(Integer id) {
         validateNotEmpty(id, "Product ID is required");
+        var sales = getSalesByProductId(id);
+        validateNotEmpty(sales.getSalesIds(), "Product has sales, cannot be deleted");
         productRepository.deleteById(id);
         return SuccessResponse.create("Product deleted successfully");
     }

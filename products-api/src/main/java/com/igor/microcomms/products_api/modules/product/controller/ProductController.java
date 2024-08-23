@@ -3,6 +3,7 @@ package com.igor.microcomms.products_api.modules.product.controller;
 import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
+import com.igor.microcomms.products_api.modules.product.dto.ProductSalesResponse;
 import com.igor.microcomms.products_api.modules.product.service.ProductService;
 
 import lombok.AllArgsConstructor;
@@ -48,6 +49,11 @@ public class ProductController {
     @GetMapping("category/{categoryId}")
     public List<ProductResponse> findByCategoryId(@PathVariable(value = "categoryId") Integer categoryId) {
         return productService.findByCategoryId(categoryId);
+    }
+
+    @GetMapping("{id}/sales")
+    public ProductSalesResponse findSalesByProductId(@PathVariable(value = "id") Integer id) {
+        return productService.findProductSales(id);
     }
 
     @PostMapping("/")

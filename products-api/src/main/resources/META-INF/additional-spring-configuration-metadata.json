@@ -43,5 +43,10 @@
     "name": "app.rabbit.queue.sales-confirmation",
     "type": "java.lang.String",
     "description": "The queue used to receive sales confirmation messages"
+  },
+  {
+    "name": "app.services.sales.url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.services.sales.url'"
   }
 ]}

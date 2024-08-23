@@ -17,10 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductStockListener {
 
     private final ProductService productService;
+    private final ObjectMapper objectMapper;
 
     @RabbitListener(queues = "${app.rabbit.queue.product-stock}")
     public void processProductStockUpdate(ProductStockDTO productStockDTO) throws JsonProcessingException {
-        log.info("Received product stock update: {}", new ObjectMapper().writeValueAsString(productStockDTO));
+        log.info("Received product stock update: {}", objectMapper.writeValueAsString(productStockDTO));
         productService.updateProductStock(productStockDTO);
     }
 }

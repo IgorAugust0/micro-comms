@@ -43,3 +43,7 @@ app:
     # algorithm: ${ACCESS_TOKEN_ALGORITHM:HS256}
     # issuer: ${ACCESS_TOKEN_ISSUER:products-api}
     # expires-in: ${ACCESS_TOKEN_EXPIRES_IN:3600}
+
+  services:
+    sales:
+      url: http://${SALES_API_HOST:localhost}:${SALES_API_PORT:8082}

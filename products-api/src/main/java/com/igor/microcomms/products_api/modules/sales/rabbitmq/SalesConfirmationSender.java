@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SalesConfirmationSender {
 
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
     @Value("${app.rabbit.exchange.product}")
     private String productTopicExchange;
@@ -29,7 +30,7 @@ public class SalesConfirmationSender {
      */
     public void sendSalesConfirmationMessage(SalesConfirmationDTO message) {
         try {
-            log.info("Sending sales confirmation: {}", new ObjectMapper().writeValueAsString(message));
+            log.info("Sending sales confirmation: {}", objectMapper.writeValueAsString(message));
             rabbitTemplate.convertAndSend(productTopicExchange, salesConfirmationKey, message);
             log.info("Message sent successfully");
         } catch (Exception e) {
