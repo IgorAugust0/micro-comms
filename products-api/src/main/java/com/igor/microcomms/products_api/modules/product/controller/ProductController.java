@@ -4,6 +4,7 @@ import com.igor.microcomms.products_api.config.exception.SuccessResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductSalesResponse;
+import com.igor.microcomms.products_api.modules.product.dto.ProductStockCheckRequest;
 import com.igor.microcomms.products_api.modules.product.service.ProductService;
 
 import lombok.AllArgsConstructor;
@@ -59,6 +60,11 @@ public class ProductController {
     @PostMapping("/")
     public ProductResponse save(@RequestBody ProductRequest request) {
         return productService.save(request);
+    }
+
+    @PostMapping("check-stock")
+    public SuccessResponse checkProductStock(@RequestBody ProductStockCheckRequest request) {
+        return productService.checkProductStock(request);
     }
 
     @PutMapping("{id}")

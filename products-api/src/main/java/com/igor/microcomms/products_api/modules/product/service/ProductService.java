@@ -8,6 +8,7 @@ import com.igor.microcomms.products_api.modules.product.dto.ProductQuantityDTO;
 import com.igor.microcomms.products_api.modules.product.dto.ProductRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductResponse;
 import com.igor.microcomms.products_api.modules.product.dto.ProductSalesResponse;
+import com.igor.microcomms.products_api.modules.product.dto.ProductStockCheckRequest;
 import com.igor.microcomms.products_api.modules.product.dto.ProductStockDTO;
 import com.igor.microcomms.products_api.modules.product.model.Product;
 import com.igor.microcomms.products_api.modules.product.repository.ProductRepository;
@@ -184,7 +185,7 @@ public class ProductService {
     private void updateStock(ProductStockDTO product) {
         var updatedProducts = product.getProducts().stream().map(salesProduct -> {
             var existingProduct = findById(salesProduct.getProductId());
-            checkStockAvailability(salesProduct, existingProduct);
+            validateStockAvailability(salesProduct, existingProduct);
             existingProduct.updateStock(salesProduct.getQuantity());
             return existingProduct;
         }).toList();
@@ -198,7 +199,7 @@ public class ProductService {
 
     public void updateProductStock(ProductStockDTO product) {
         try {
-            checkStockUpdate(product);
+            validateStockUpdate(product);
             updateStock(product);
         } catch (Exception e) {
             log.error("Error updating product stock: {}", e.getMessage(), e);
@@ -206,6 +207,14 @@ public class ProductService {
             salesConfirmationSender.sendSalesConfirmationMessage(rejectedMessage);
 
         }
+    }
+
+    public SuccessResponse checkProductStock(ProductStockCheckRequest request) {
+        validateNotEmpty(request, "Request data is required");
+        validateNotEmpty(request.getProducts(), "Product list is required for stock check");
+        request.getProducts().forEach(this::checkStock); // method reference to checkStock method
+        var response = SuccessResponse.create("All products have sufficient stock");
+        return response;
     }
 
     // ===========================
@@ -222,7 +231,7 @@ public class ProductService {
         validateNotEmpty(request.getSupplierId(), "Supplier ID was not provided");
     }
 
-    private void checkStockUpdate(ProductStockDTO product) {
+    private void validateStockUpdate(ProductStockDTO product) {
         validateNotEmpty(product, "Product data is required");
         validateNotEmpty(product.getSalesId(), "Sales ID is required");
         validateNotEmpty(product.getProducts(), "Product list is required");
@@ -232,11 +241,18 @@ public class ProductService {
         });
     }
 
-    private void checkStockAvailability(ProductQuantityDTO salesProduct, Product existingProduct) {
+    private void validateStockAvailability(ProductQuantityDTO salesProduct, Product existingProduct) {
         var isStockAvailable = existingProduct.getQuantityAvailable() >= salesProduct.getQuantity();
         var exceptionMessage = String.format("Product %s has insufficient stock", existingProduct.getName());
         if (!isStockAvailable)
             throw new ValidationException(exceptionMessage);
+    }
+
+    private void checkStock(ProductQuantityDTO productQuantity) {
+        validateNotEmpty(productQuantity.getProductId(), "Product ID is required");
+        validateNotEmpty(productQuantity.getQuantity(), "Product quantity is required");
+        var product = findById(productQuantity.getProductId());
+        validateStockAvailability(productQuantity, product);
     }
 
 }

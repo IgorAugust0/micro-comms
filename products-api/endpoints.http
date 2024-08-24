@@ -113,6 +113,31 @@ Authorization: Bearer <token>
   "categoryId": 5
 }
 
+### --------------------------------------------------------STOCK--------------------------------------------------------
+
+### ----------------- POST -----------------
+
+### POST Check Stock
+POST http://localhost:8081/api/product/check-stock
+Content-Type: application/json
+
+{
+  "products": [
+    {
+      "productId": 1,
+      "quantity": 10
+    },
+    {
+      "productId": 2,
+      "quantity": 10
+    },
+    {
+      "productId": 3,
+      "quantity": 20
+    }
+  ]
+}
+
 ### --------------------------------------------------------POST--------------------------------------------------------
 
 ### ----------------- CATEGORY -----------------
