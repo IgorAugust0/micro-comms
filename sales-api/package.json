@@ -5,17 +5,18 @@
     "dev": "nodemon --exec node --no-warnings --loader ts-node/esm src/server.ts"
   },
   "dependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.5.5",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
+    "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.2",
-    "typescript": "^5.5.4"
+    "mongoose": "^8.6.2",
+    "typescript": "^5.6.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "dotenv": "^16.4.5",
-    "eslint": "^9.8.0",
+    "eslint": "^9.10.0",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2"
