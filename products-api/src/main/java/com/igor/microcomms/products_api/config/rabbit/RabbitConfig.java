@@ -6,41 +6,30 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.AllArgsConstructor;
+
 @Configuration
+@AllArgsConstructor
 public class RabbitConfig {
 
-    @Value("${app.rabbit.exchange.product}")
-    private String productTopicExchange;
-
-    @Value("${app.rabbit.routingKey.product-stock}")
-    private String productStockKey;
-
-    @Value("${app.rabbit.routingKey.sales-confirmation}")
-    private String salesConfirmationKey;
-
-    @Value("${app.rabbit.queue.product-stock}")
-    private String productStockQueue;
-
-    @Value("${app.rabbit.queue.sales-confirmation}")
-    private String salesConfirmationQueue;
+    private final RabbitProperties rabbitProperties;
 
     @Bean
     public TopicExchange productTopicExchange() {
-        return new TopicExchange(productTopicExchange);
+        return new TopicExchange(rabbitProperties.getExchange().getProduct());
     }
 
     @Bean
     public Queue productStockQueue() {
-        return new Queue(productStockQueue, true);
+        return new Queue(rabbitProperties.getQueue().getProductStock(), true);
     }
 
     @Bean
     public Queue salesConfirmationQueue() {
-        return new Queue(salesConfirmationQueue, true);
+        return new Queue(rabbitProperties.getQueue().getSalesConfirmation(), true);
     }
 
     @Bean
@@ -49,7 +38,7 @@ public class RabbitConfig {
         return BindingBuilder
                 .bind(productStockQueue()) // this queue is binded
                 .to(topicExchange) // to this exchange
-                .with(productStockKey); // with this key
+                .with(rabbitProperties.getRoutingKey().getProductStock()); // with this key
     }
 
     @Bean
@@ -57,11 +46,10 @@ public class RabbitConfig {
         return BindingBuilder
                 .bind(salesConfirmationQueue())
                 .to(topicExchange)
-                .with(salesConfirmationKey);
+                .with(rabbitProperties.getRoutingKey().getSalesConfirmation());
     }
 
-    // Converts messages to JSON format using the Jackson library, and can also
-    // convert JSON messages to Java objects
+    // Converts messages to JSON format using the Jackson library and JSON messages to Java objects
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
