@@ -1,0 +1,8 @@
+### Get Auth status
+GET http://localhost:8082/api/status
+Authorization: Bearer <token>
+
+
+### Get User by Email with JWT
+GET http://localhost:8080/api/user/email/johndoe@email.com
+Authorization: Bearer <token>

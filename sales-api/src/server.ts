@@ -1,6 +1,7 @@
 import express from "express";
 import { connectToMongoDB } from "./config/db/mongo-db-config.ts";
 import { createPlaceholderData } from "./lib/placeholder-data.ts";
+import middleware from "./middleware.ts";
 
 const app = express();
 const env = process.env.NODE_ENV || "development";
@@ -8,6 +9,8 @@ const port = process.env.PORT || 8082;
 
 async function startServer() {
   try {
+    app.use(middleware);
+
     app.get("/api/status", (req, res) => {
       res
         .status(200)
