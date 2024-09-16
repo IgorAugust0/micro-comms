@@ -32,7 +32,7 @@
   "include": [
     "src/**/*.ts",
     "src/lib/placeholder-data.ts",
-    "src/modules/model/user-model.ts",
+    "src/modules/sales/model/order.ts",
     "src/config/db/db-config.ts",
     "**/*.ts",
   ],
