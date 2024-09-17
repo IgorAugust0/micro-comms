@@ -1,4 +1,4 @@
-import Order from "../modules/sales/model/order.ts";
+import Order from "../../modules/sales/model/order.ts";
 
 export async function createPlaceholderData() {
   await Order.collection.drop();

@@ -1,6 +1,6 @@
 import express from "express";
 import { connectToMongoDB } from "./config/db/mongo-db-config.ts";
-import { createPlaceholderData } from "./lib/placeholder-data.ts";
+import { createPlaceholderData } from "./config/db/placeholder-data.ts";
 import { connectRabbitMq } from "./config/rabbitmq/rabbit-config.ts";
 import middleware from "./middleware.ts";
 
