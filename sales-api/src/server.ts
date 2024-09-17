@@ -1,9 +1,8 @@
 import express from "express";
+import middleware from "./middleware.ts";
 import { connectToMongoDB } from "./config/db/mongo-db-config.ts";
 import { createPlaceholderData } from "./config/db/placeholder-data.ts";
-import { connectRabbitMq } from "./config/rabbitmq/rabbit-config.ts";
-import middleware from "./middleware.ts";
-import { sendMessageToProductStockUpdateQueue } from "./modules/product/rabbitmq/product-stock-update-sender.ts";
+import { rabbitMQService } from "./config/rabbitmq/rabbit-service.ts";
 
 const app = express();
 const env = process.env.NODE_ENV || "development";
@@ -14,25 +13,16 @@ async function startServer() {
     app.use(middleware);
 
     // testing purposes
-    app.get("/test", (req, res) => {
+    app.get("/test", async (req, res) => {
       try {
-        sendMessageToProductStockUpdateQueue([
-          {
-            productId: 1,
-            quantity: 2,
-          },
-          {
-            productId: 2,
-            quantity: 1,
-          },
-          {
-            productId: 3,
-            quantity: 4,
-          }
+        await rabbitMQService.sendStockUpdateMessages([
+          { productId: 1, quantity: 2 },
+          { productId: 2, quantity: 1 },
+          { productId: 3, quantity: 4 },
         ]);
         return res.status(200).json({ status: 200 });
       } catch (error) {
-        console.log(error);
+        console.error("Error sending stock update messages:", error);
         return res.status(500).json({ error: true });
       }
     });
@@ -47,13 +37,29 @@ async function startServer() {
       console.log(`Server is running on port ${port} in ${env} mode`);
     });
 
+    // Initialize services
     await connectToMongoDB();
     await createPlaceholderData();
-    await connectRabbitMq();
+    await rabbitMQService.initialize();
+
+    // Set up RabbitMQ listener
+    await rabbitMQService.listenToSalesConfirmation(async (content) => {
+      console.log("Received sales confirmation:", content);
+      // Process the sales confirmation message
+      // Call a service method here to update the order status
+    });
+
+    console.log("Server initialization completed");
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
   }
 }
+
+process.on("SIGINT", async () => {
+  console.log("Gracefully shutting down...");
+  await rabbitMQService.close();
+  process.exit(0);
+});
 
 startServer();
