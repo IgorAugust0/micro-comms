@@ -1,38 +1,50 @@
 import amqp, { Connection, Channel } from "amqplib/callback_api";
-
-import {
-  PRODUCT_TOPIC,
-  PRODUCT_STOCK_UPDATE_QUEUE,
-  PRODUCT_STOCK_UPDATE_ROUTING_KEY,
-  SALES_CONFIRMATION_QUEUE,
-  SALES_CONFIRMATION_ROUTING_KEY,
-} from "./queue.ts";
-
-import { RABBITMQ_URL } from "../../lib/util.ts";
+import config from "./queue.ts";
 
 const TWO_SECONDS = 2000;
 
-export async function connectRabbitMq() {
-  amqp.connect(RABBITMQ_URL, (error, connection) => {
-    if (error) {
-      throw error;
+interface RabbitMQConfig {
+  url: string;
+  queues: {
+    productStockUpdate: string;
+    salesConfirmation: string;
+  };
+  routingKeys: {
+    productStockUpdate: string;
+    salesConfirmation: string;
+  };
+  topics: {
+    product: string;
+  };
+}
+
+export async function connectRabbitMq(): Promise<void> {
+  const rabbitConfig: RabbitMQConfig = config.get("rabbitmq");
+
+  amqp.connect(
+    rabbitConfig.url,
+    (error: Error | null, connection: Connection) => {
+      if (error) {
+        console.error("Failed to connect to RabbitMQ:", error);
+        return;
+      }
+      createQueue(
+        connection,
+        rabbitConfig.queues.productStockUpdate,
+        rabbitConfig.routingKeys.productStockUpdate,
+        rabbitConfig.topics.product
+      );
+      createQueue(
+        connection,
+        rabbitConfig.queues.salesConfirmation,
+        rabbitConfig.routingKeys.salesConfirmation,
+        rabbitConfig.topics.product
+      );
+      setTimeout(() => {
+        connection.close();
+      }, TWO_SECONDS);
     }
-    createQueue(
-      connection,
-      PRODUCT_STOCK_UPDATE_QUEUE,
-      PRODUCT_STOCK_UPDATE_ROUTING_KEY,
-      PRODUCT_TOPIC
-    );
-    createQueue(
-      connection,
-      SALES_CONFIRMATION_QUEUE,
-      SALES_CONFIRMATION_ROUTING_KEY,
-      PRODUCT_TOPIC
-    );
-    setTimeout(() => {
-      connection.close();
-    }, TWO_SECONDS);
-  });
+  );
 }
 
 function createQueue(
@@ -43,7 +55,7 @@ function createQueue(
 ): void {
   connection.createChannel((error: Error | null, channel: Channel) => {
     if (error) {
-      console.log("Failed to create channel: ", error);
+      console.error("Failed to create channel: ", error);
       return;
     }
     channel.assertExchange(topic, "topic", { durable: true });

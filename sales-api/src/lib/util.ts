@@ -45,4 +45,3 @@ export const getEnvVariable = (name: string, defaultValue?: string): string => {
 
 export const ACCESS_TOKEN_SECRET = getEnvVariable("ACCESS_TOKEN_SECRET");
 export const MONGO_DB_URL = getEnvVariable("MONGO_DB_URL", "mongodb://admin:123456@localhost:27017");
-export const RABBITMQ_URL = getEnvVariable("RABBITMQ_URL", "amqp://localhost:5672");
