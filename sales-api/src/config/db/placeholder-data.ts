@@ -1,8 +1,15 @@
-import Order from "../../modules/sales/model/order.ts";
+// import Order from "../../modules/order/model/order.ts";
+import OrderRepository from "../../modules/order/repository/order-repository.ts";
+import { IOrder } from "../../types/types.ts";
 
-export async function createPlaceholderData() {
-  await Order.collection.drop();
-  await Order.create({
+const orderRepo = new OrderRepository();
+
+export async function createPlaceholderData(): Promise<void> {
+  // Drop the existing collection
+  await orderRepo.dropCollection();
+
+  // Create first order
+  await orderRepo.save({
     products: [
       {
         productId: 1,
@@ -23,10 +30,10 @@ export async function createPlaceholderData() {
       email: "johndoe@email.com",
     },
     status: "APPROVED",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-  await Order.create({
+  } as Partial<IOrder>); // dismises the error if any property is missing
+
+  // Create second order
+  await orderRepo.save({
     products: [
       {
         productId: 4,
@@ -43,10 +50,11 @@ export async function createPlaceholderData() {
       email: "janedoe@email.com",
     },
     status: "REJECTED",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+  } as Partial<IOrder>);
+
   console.log("Placeholder data created");
-  const orders = await Order.find();
+
+  // Fetch and log all orders
+  const orders = await orderRepo.findAll();
   console.log("Orders:", orders);
 }

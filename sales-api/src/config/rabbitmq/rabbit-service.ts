@@ -1,6 +1,6 @@
 import amqp, { Connection, Channel, Message } from "amqplib";
-import config from "./config.ts";
 import { RabbitMQConfig, StockUpdateMessage } from "../../types/types.ts";
+import config from "./config.ts";
 
 class RabbitMQService {
   private connection: Connection | null = null;

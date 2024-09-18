@@ -15,7 +15,7 @@ export class UserException extends BaseException {
   }
 }
 
-export class AuthException extends BaseException {
+export class OrderException extends BaseException {
   constructor(status: number, message: string) {
     super(status, message);
   }
