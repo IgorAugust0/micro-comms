@@ -1,13 +1,14 @@
 import amqp, { Connection, Channel, Message } from "amqplib";
 import { RabbitMQConfig, StockUpdateMessage } from "../../types/types.ts";
 import config from "./config.ts";
+import OrderService from "../../modules/order/service/order-service.ts";
 
 class RabbitMQService {
   private connection: Connection | null = null;
   private channel: Channel | null = null;
   private readonly config: RabbitMQConfig;
 
-  constructor() {
+  constructor(private orderService: typeof OrderService) {
     this.config = config.get("rabbitmq") as RabbitMQConfig;
   }
 
@@ -52,17 +53,17 @@ class RabbitMQService {
     console.info(`Sent ${messages.length} stock update messages`);
   }
 
-  async listenToSalesConfirmation(
-    callback: (content: string) => Promise<void>
-  ): Promise<void> {
+  async listenToSalesConfirmation(): Promise<void> {
     const channel = await this.getChannel();
+
     await channel.consume(
       this.config.queues.salesConfirmation,
       async (message: Message | null) => {
         if (message) {
           const content = message.content.toString();
           try {
-            await callback(content);
+            console.info(`Received message from queue: ${content}`);
+            await this.orderService.updateOrder(content);
             channel.ack(message);
           } catch (error) {
             console.error("Error processing message:", error);
@@ -85,4 +86,4 @@ class RabbitMQService {
   }
 }
 
-export const rabbitMQService = new RabbitMQService();
+export const rabbitMQService = new RabbitMQService(OrderService);

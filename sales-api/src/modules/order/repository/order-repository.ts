@@ -2,7 +2,7 @@ import { Model } from "mongoose";
 import Order from "../model/order.ts";
 import { IOrder } from "../../../types/types.ts";
 
-class OrderRepository {
+export default class OrderRepository {
   private model: Model<IOrder>;
 
   constructor(model: Model<IOrder> = Order) {
@@ -43,5 +43,3 @@ class OrderRepository {
     }
   }
 }
-
-export default OrderRepository;

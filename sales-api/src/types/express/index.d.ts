@@ -7,6 +7,11 @@ declare global {
   namespace Express {
     interface Request {
       authUser?: User;
+      headers: {
+        transactionid?: string;
+        serviceid?: string;
+        authorization?: string;
+      };
     }
   }
 }

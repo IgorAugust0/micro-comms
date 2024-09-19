@@ -42,13 +42,6 @@ async function startServer() {
     await createPlaceholderData();
     await rabbitMQService.initialize();
 
-    // Set up RabbitMQ listener
-    await rabbitMQService.listenToSalesConfirmation(async (content) => {
-      console.log("Received sales confirmation:", content);
-      // Process the sales confirmation message
-      // Call a service method here to update the order status
-    });
-
     console.log("Server initialization completed");
   } catch (error) {
     console.error("Failed to start server:", error);

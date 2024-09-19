@@ -25,7 +25,7 @@ export async function createPlaceholderData(): Promise<void> {
       },
     ],
     user: {
-      id: "a8s7a9d8a9s8d7a9s8d7",
+      id: 1,
       name: "John Doe",
       email: "johndoe@email.com",
     },
@@ -45,7 +45,7 @@ export async function createPlaceholderData(): Promise<void> {
       },
     ],
     user: {
-      id: "j2da9s8d9a8s7d9a8s7d",
+      id: 2,
       name: "Jane Doe",
       email: "janedoe@email.com",
     },
