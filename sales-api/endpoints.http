@@ -6,3 +6,28 @@ Authorization: Bearer <token>
 ### Get User by Email with JWT
 GET http://localhost:8080/api/user/email/johndoe@email.com
 Authorization: Bearer <token>
+
+### GET Order by ID with JWT
+GET http://localhost:8082/api/order/66ed81ed0a45622c9df2e77e
+Authorization: Bearer <token>
+
+### POST Order with JWT
+POST http://localhost:8082/api/order/create
+Authorization: Bearer <token>
+
+{
+  "products": [
+    {
+      "productId": 1,
+      "quantity": 2
+    },
+    {
+      "productId": 2,
+      "quantity": 1
+    },
+    {
+      "productId": 3,
+      "quantity": 3
+    }
+  ]
+}

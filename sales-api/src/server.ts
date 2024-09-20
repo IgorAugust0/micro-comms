@@ -3,6 +3,7 @@ import middleware from "./middleware.ts";
 import { connectToMongoDB } from "./config/db/mongo-db-config.ts";
 import { createPlaceholderData } from "./config/db/placeholder-data.ts";
 import { rabbitMQService } from "./config/rabbitmq/rabbit-service.ts";
+import orderRouter from "./routes/order-router.ts";
 
 const app = express();
 const env = process.env.NODE_ENV || "development";
@@ -10,7 +11,9 @@ const port = process.env.PORT || 8082;
 
 async function startServer() {
   try {
-    app.use(middleware);
+    app.use(express.json());
+    // app.use(middleware);
+    app.use(orderRouter);
 
     // testing purposes
     app.get("/test", async (req, res) => {

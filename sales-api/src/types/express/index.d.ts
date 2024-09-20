@@ -8,8 +8,8 @@ declare global {
     interface Request {
       authUser?: User;
       headers: {
-        transactionid?: string;
-        serviceid?: string;
+        transactionId?: string;
+        serviceId?: string;
         authorization?: string;
       };
     }

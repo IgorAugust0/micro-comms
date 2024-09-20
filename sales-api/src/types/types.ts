@@ -87,3 +87,13 @@ export interface AuthenticatedRequest extends Request {
     authorization: string;
   };
 }
+
+// export interface AuthenticatedRequest extends Request {
+//   body: { products: IProduct[] } & Record<string, any>;
+//   authUser: User;
+//   headers: Request['headers'] & {
+//     transactionId?: string;
+//     serviceId?: string;
+//     authorization?: string;
+//   };
+// }

@@ -1,5 +1,6 @@
 import { rabbitMQService } from "../../../config/rabbitmq/rabbit-service.ts";
 import { StatusCodes } from "http-status-codes";
+import { Request } from "express";
 import { OrderException } from "../../../lib/exceptions";
 import { User } from "../../../../../auth-api/src/modules/model/user-model.ts";
 import { APPROVED, PENDING, REJECTED } from "../../../lib/status.ts";
@@ -73,6 +74,24 @@ class OrderService {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error("Could not parse order message from queue:", message);
+    }
+  }
+
+  async findById(req: AuthenticatedRequest): Promise<OrderResponse> {
+    const {
+      params: { id },
+      headers: { transactionId, serviceId },
+    } = req;
+
+    try {
+      this.validateInformedId(id);
+      const existingOrder = await this.orderRepository.findById(id);
+      if (!existingOrder) {
+        throw new OrderException(BAD_REQUEST, "Order not found.");
+      }
+      return { status: OK, existingOrder };
+    } catch (err: unknown) {
+      return this.handleError(err);
     }
   }
 
